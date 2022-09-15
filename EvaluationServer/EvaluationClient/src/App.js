@@ -3,6 +3,8 @@ import ManagerLogin from './Components/ManagetLogin';
 import ManagerSignUp from './Components/ManagerSignUp';
 import Managermainpage from './Components/Managermainpage';
 import Createsubject from './Components/Createsubject';
+import Assignment from './Components/Assignment';
+import Createassi from './Components/Createassi';
 
 function App() {
     
@@ -14,6 +16,8 @@ function App() {
         <Route path='/managersignup' element={<ManagerSignUp/>}></Route>
         <Route path='/manager' element={<Managermainpage/>}></Route>
         <Route path='/createsubject' element={<Createsubject/>}></Route>
+        <Route path='/assignment' element={<Assignment/>}></Route>
+        <Route path='/createassi' element={<Createassi/>}></Route>
       </Routes>
     </div>
   );

@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
 var app = express();
+const path = require('path')
 const cors = require('cors');
 const { response } = require('express');
 const { json } = require('body-parser');
@@ -27,10 +28,64 @@ MongoClient.connect(url, options, function(err, dataBase) {
 
 let managerName;
 let managetUrl;
-let managerSubject;
+let managerSubName;
 
-app.get('/managerdata', function(req, res) {
-    res.json([managerName , managerSubject]);
+app.post('/assignments' , function(req, res) {
+    const {name , subject, assiname, explains, date} = req.body;
+    console.log('name' , name)
+    console.log('subject' , subject)
+    console.log('assiname' , assiname)
+    console.log('explains' , explains)
+    console.log('date' , date)
+
+    var table = db.db("EvaluationDB");
+    var currentName = {name : name, subjectNames : subject};
+    var newAssignment = {$push : {assignment : assiname}}
+    table.collection('manager').updateOne(currentName, newAssignment,  function(err, res) {
+        if(err) {
+            console.log('assignment update err')
+        }
+        console.log('assignment update')
+    })
+
+})
+
+app.post('/managerList', function(req, res) {
+    const {list} = req.body;
+    managerSubName = list;
+
+    var table = db.db("EvaluationDB");
+    table.collection('manager').find().toArray(function(err, docs) {
+        for(var i = 0 ; i < docs.length ; i++) {
+            if(managerName === docs[i].name) {
+                for(var j = 0 ; j < docs[i].subjectNames.length ; j++) {
+                    if(list === docs[i].subjectNames[j]) {
+                        res.json(docs[i].subjectNames[j]);
+                    }
+                }
+            }
+        }
+    })
+})
+
+app.post('/managerSubName', function(req, res) {
+    res.json([managerName, managerSubName]);
+})
+
+app.post('/managerdata', function(req, res) {
+    const {respon} = req.body;
+    console.log('res', respon);
+
+
+    var table = db.db("EvaluationDB");
+
+    table.collection('manager').find().toArray(function(err, docs) {
+        for(var i = 0 ; i < docs.length ; i++) {
+            if(managerName === docs[i].name) {
+                res.json([docs[i].name, docs[i].subjectNames])
+            }
+        }
+    })
 })
 
 app.post('/manager', function(req, res) {
@@ -73,33 +128,13 @@ app.post('/loginmanager', function(req, res) {
                 loginResult = true;
                 managerName = docs[i].name;
                 managetUrl = docs[i]._id;
-                managerSubject = docs[i].subjectNames
                 break;
             } else {
                 loginResult = false;
             }
         }
-        //console.log(loginResult);
         res.send(loginResult);
     })
-})
-
-app.post('/managerReload', function(req, res) {
-    const {nowurl} = req.body;
-    console.log('dd', nowurl);
-    var table = db.db("EvaluationDB");
-    table.collection('manager').find().toArray(function(err, docs) {
-        if(err) {
-            console.log('managerUrl err')
-        }
-        for(var i = 0 ; i < docs.length ; i++) {
-            if(nowurl === docs[i].number) {
-                res.json(docs[i].name)
-            }
-        }
-    }
-)
-
 })
 
 app.post('/createSubject', function(req, res) {
@@ -121,3 +156,13 @@ app.post('/createSubject', function(req, res) {
 app.listen(9000 , (req, res) => {
     console.log('server start');
 });
+
+app.use(express.static(path.join(__dirname, 'EvaluationClient/build')))
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'EvaluationClient/build/index.html'))
+})
+
+app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname, 'EvaluationClient/build/index.html'))
+})
