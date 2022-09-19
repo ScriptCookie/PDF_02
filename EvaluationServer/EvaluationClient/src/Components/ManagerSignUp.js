@@ -18,7 +18,8 @@ function ManagerSignUp() {
                 number : number,
                 pw : pw,
                 name : name,
-                subjectNames : []
+                subjectNames : [],
+                subject : []
             })
         })
         .then(res => res.json())

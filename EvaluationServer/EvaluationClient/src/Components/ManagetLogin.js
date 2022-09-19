@@ -21,9 +21,8 @@ function ManagerLogin() {
         .then(res => {
             if(res === true) {
                 navi('/manager')
-            } else {
+            } else if (res === false) {
                 alert('존재하지 않거나 아이디 및 비밀번호가 틀렸습니다.')
-                
             }
         });
     }

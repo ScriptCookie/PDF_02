@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 
 function Createassi() {
     const [managerName, setManagerName] = useState();
     const [managerSubject, setManagerSubject] = useState();
-    const [explains, setExplains] = useState();
-    const [assiNames, setAssiNames] = useState();
+    const [explains, setExplains] = useState(null);
+    const [assiNames, setAssiNames] = useState(null);
     const date = new Date();
+    const navi = useNavigate();
 
     fetch('http://localhost:9000/managerSubName', {
         method : 'post',
@@ -44,6 +46,13 @@ function Createassi() {
                 date : date.toLocaleDateString()
             })
         })
+        if(assiNames !== null || explains !== null) {
+            alert('과제가 만들어졌습니다.')
+            navi('/assignment')
+            
+        } else if(assiNames === null || explains === null) {
+            alert('빈칸을 채우세요.')
+        }
     }
 
     return(

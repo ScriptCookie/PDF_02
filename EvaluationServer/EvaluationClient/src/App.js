@@ -5,6 +5,7 @@ import Managermainpage from './Components/Managermainpage';
 import Createsubject from './Components/Createsubject';
 import Assignment from './Components/Assignment';
 import Createassi from './Components/Createassi';
+import Solving from './Components/Solving';
 
 function App() {
     
@@ -18,6 +19,7 @@ function App() {
         <Route path='/createsubject' element={<Createsubject/>}></Route>
         <Route path='/assignment' element={<Assignment/>}></Route>
         <Route path='/createassi' element={<Createassi/>}></Route>
+        <Route path='/solving' element={<Solving/>}></Route>
       </Routes>
     </div>
   );

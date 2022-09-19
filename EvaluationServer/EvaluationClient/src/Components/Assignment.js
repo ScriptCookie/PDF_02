@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Assinull from './Assinull';
 import AssiList from './AssiList';
+import Invite from './Invite';
 
 function Assignment() {
     const navi = useNavigate();
     const [subName, setSubName] = useState();
     const [managerName, setmanagerName] = useState();
-    // const [assignmentName , setAssignmentName] = useState();
-    // const [assignmentDate , setAssignmentDate] = useState();
+    const [show, setShow] = useState(false);
+    const [showInvite, setShowInvite] = useState(false);
+    const [assignmentName , setAssignmentName] = useState([]);
+    const [assignmentDate , setAssignmentDate] = useState();
 
     function assiname() {
         fetch('http://localhost:9000/managerSubName', {
@@ -38,7 +41,21 @@ function Assignment() {
             })
         })
         .then(res => res.json())
-        .then(res => console.log(res))
+        .then(res => {
+            if(res.length === 0) {
+                setShow(false);
+            } else if (res.length !== 0) {
+                setShow(true);
+                const resNameMap = res.map((res) => (res[1]))
+                const resDateMap = res.map((res) => (res[3]))
+                setAssignmentName(resNameMap)
+                setAssignmentDate(resDateMap)
+            }
+        })
+    }
+
+    function invite() {
+        setShowInvite(true);
     }
 
     useEffect(() => {
@@ -51,10 +68,13 @@ function Assignment() {
     }
 
     return(
-        <div>
+        <div> 
             <h2>{managerName} 교수님 {subName}과목 과제 페이지</h2>
-            {/* <AssiList value={[assignmentName, assignmentDate]}/> */}
+            {show ? <AssiList value={assignmentName} name = {managerName}/> : <Assinull/>}
             <button onClick={createMove}>과제 만들기</button>
+            <p></p>
+            {showInvite && <Invite/>}
+            <button onClick={invite}>구성원 초대하기</button>
         </div>
     );
 }
